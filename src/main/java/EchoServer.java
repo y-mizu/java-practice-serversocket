@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.IOException;
 
 // １ EchoServerクラスをつくる
 public class EchoServer {
@@ -29,21 +26,27 @@ public class EchoServer {
                 socket = serverSocket.accept();
 
                 //６ 入力Streamのインスタンスを作成
-                InputStreamReader isr = new InputStreamReader(System.in);
+                InputStream is = socket.getInputStream();
 
                 //７ 出力Streamのインスタンスを作成
                 OutputStream os = socket.getOutputStream();
 
-                //８ 入力StreamにKeyBoardから打ち込んだものを読込ませる(readLine)
-                BufferedReader br = new BufferedReader(isr);
+                //８ 入力StreamにKeyBoardか(telnet)ら打ち込んだものを読込ませる(readLine)
+                DataInputStream dis = new DataInputStream(is);
+                PrintStream ps = new PrintStream(os);
 
-                String str = br.readLine();
+                //BufferedReader br = new BufferedReader(isr);
 
-                //９ 入力Streamで得たものを出力Streamに渡す
-                byte[] echo = str.getBytes();
+                // クライアントから文字列を受信し、標準出力に出力する
+
+                String receive = dis.readLine();
+                System.out.println(receive + "が入力されました.");
+
+                //９ クライアントにメッセージを送る
+                String send = "Received: \"" + receive + "\"";
 
                 //１０ 出力Streamの中身を書出す(write)
-                os.write(echo);
+                ps.println(send);
 
             } catch (IOException e1) {
                 e1.printStackTrace();
