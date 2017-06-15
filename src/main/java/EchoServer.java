@@ -7,46 +7,47 @@ public class EchoServer {
     public static void main(String[] args) {
         Socket socket;
         int PORT = 8080;
-        //２ サーバーソケットのインスタンスを生成する
 
+        //２ サーバーソケットのインスタンスを生成する
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //３　ソケットの登録(bind)
-
-        //４　ソケット接続準備(listen)
 
         //<繰返>
         while (true) {
             try {
-                //５ サーバーソケットに対する接続要求を待機して、それを受け取る(accept)
+                //３ サーバーソケットに対する接続要求を待機して、それを受け取る(accept)
                 socket = serverSocket.accept();
 
-                //６ 入力Streamのインスタンスを作成
+                //４ InputStream型の変数isに通信ソケットから受信するバイトストリームを取得
                 InputStream is = socket.getInputStream();
 
-                //７ 出力Streamのインスタンスを作成
+                //５ OutputStream型の変数osに通信ソケットに送信するバイトストリームを取得
                 OutputStream os = socket.getOutputStream();
 
-                //８ 入力StreamにKeyBoardか(telnet)ら打ち込んだものを読込ませる(readLine)
+                //６ DataInputStreamのインスタンスの生成及びPrintStream型のインスタンスの生成
                 DataInputStream dis = new DataInputStream(is);
                 PrintStream ps = new PrintStream(os);
 
-                //BufferedReader br = new BufferedReader(isr);
-
-                // クライアントから文字列を受信し、標準出力に出力する
-
+                //７ クライアントから文字列を受信し、標準出力に出力する
                 String receive = dis.readLine();
-                System.out.println(receive + "が入力されました.");
+                System.out.println(receive + "が入力されました。");
+
+                //８ クライアント返すために、変数sendに標準出力receiveを代入
+                String send = "Received:" +receive;
 
                 //９ クライアントにメッセージを送る
-                String send = "Received: \"" + receive + "\"";
-
-                //１０ 出力Streamの中身を書出す(write)
                 ps.println(send);
+
+                //１０　ストリームやソケットを閉じる
+                dis.close();
+                ps.close();
+                is.close();
+                os.close();
+                socket.close();
 
             } catch (IOException e1) {
                 e1.printStackTrace();
