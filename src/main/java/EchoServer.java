@@ -5,7 +5,7 @@ import java.net.Socket;
 // １ EchoServerクラスをつくる
 public class EchoServer {
     public static final int PORT = 8080;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // ２ ServerSocket型の変数serverSocketを初期化　
         ServerSocket serverSocket = null;
 
@@ -41,8 +41,8 @@ public class EchoServer {
                 br.close();
                 ps.close();
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } finally {
+                if(serverSocket != null) serverSocket.close();
             }
         }
     }
